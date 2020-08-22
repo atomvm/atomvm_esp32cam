@@ -6,30 +6,30 @@ The AtomVM Nif can be used to drive cameras that can be attached to some ESP32 S
 
 This driver is included as an add-on to the AtomVM base image.  In order to use this driver, you must be able to build the AtomVM virtual machine, which in turn requires installation of the Espressif IDF SDK and tool chain.
 
-> Note.  For build instructions of the AtomVM Virtual machine on the ESP32 platform, see [here](there).
+> Note.  For build instructions of the AtomVM Virtual machine on the ESP32 platform, see [here](https://github.com/bettio/AtomVM/blob/master/doc/atomvm-esp32.md#adding-custom-nifs-and-third-party-components).
 
 ## Getting Started
 
 Clone this repository in the `src/platforms/esp32/components` directory of the AtomVM source tree.
 
     shell$ cd src/platforms/esp32/components
-    shell$ git clone https://github.com/fadushin/atomvm_esp32cam
+    shell$ git clone https://github.com/fadushin/atomvm_esp32cam.git
 
 Clone the Espressif `esp32-camera` component in the `src/platforms/esp32/components` directory of the AtomVM source tree.
 
     shell$ cd src/platforms/esp32/components
-    shell$ git clone https://github.com/espressif/esp32-camera
+    shell$ git clone https://github.com/espressif/esp32-camera.git
 
 Create a `component_nifs.txt` file, if it does not already exist, in `src/platforms/esp32/main`.  The contents of this file should contain a single line for the ESP32 cam driver:
 
-    esp32cam_driver
+    atomvm_esp32cam
 
 Build and flash AtomVM (typically from `src/platforms/esp32`)
 
     shell$ cd src/platforms/esp32
     shell$ make flash
 
-The AtomVM image flashed should be capable of
+Once the AtomVM image is flashed to the ESP32 device, it includes NIFs for interfacing with the ESP32 camera on the device.
 
 > Note.  The `atomvm_esp32cam` Nif is currently only supported on the the [AI Thinker ESP32-cam](https://randomnerdtutorials.com/esp32-cam-ai-thinker-pinout/).
 

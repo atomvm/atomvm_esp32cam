@@ -1,5 +1,5 @@
 set(COMPONENT_SRCS
-  driver/esp32cam_driver.c
+  driver/atomvm_esp32cam.c
   )
 
 set(COMPONENT_ADD_INCLUDEDIRS

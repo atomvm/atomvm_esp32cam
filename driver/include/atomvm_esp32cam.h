@@ -15,4 +15,4 @@
 // limitations under the License.
 //
 
-const struct Nif *esp32cam_driver_nifs_get_nif(const char *nifname);
+const struct Nif *atomvm_esp32cam_get_nif(const char *nifname);

@@ -20,17 +20,18 @@
 
 #include <stdlib.h>
 
-#include "context.h"
-#include "defaultatoms.h"
-#include "interop.h"
-#include "nifs.h"
-#include "port.h"
-#include "term.h"
+#include <context.h>
+#include <defaultatoms.h>
+#include <interop.h>
+#include <nifs.h>
+#include <port.h>
+#include <term.h>
+#include "atomvm_esp32cam.h"
 
 //#define ENABLE_TRACE
 #include "trace.h"
 
-#define TAG "esp32cam"
+#define TAG "atomvm_esp32cam"
 #define DEFAULT_JPEG_QUALITY 12
 #define INVALID_JPEG_QUALITY -1
 
@@ -236,7 +237,7 @@ static const struct Nif esp32cam_capture_nif =
 };
 
 
-const struct Nif *esp32cam_driver_nifs_get_nif(const char *nifname)
+const struct Nif *atomvm_esp32cam_get_nif(const char *nifname)
 {
     if (strcmp("esp32cam:init/0", nifname) == 0) {
         TRACE("Resolved platform nif %s ...\n", nifname);
