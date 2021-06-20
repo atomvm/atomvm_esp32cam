@@ -16,7 +16,7 @@
 %%
 -module(esp32cam).
 
--export([init/1, capture/0, capture/1]).
+-export([init/0, init/1, capture/0, capture/1]).
 
 -type esp32cam_config_item() ::
     {model, aithinker}
@@ -28,9 +28,21 @@
 -type capture_params() :: [capture_param()].
 -type image() :: binary().
 
+-define(DEFAULT_CONFIG, [{model, aithinker}, {frame_size, xga}, {jpeg_quality, 12}]).
+
+%%-----------------------------------------------------------------------------
+%% @returns `ok' or error with reason
+%% @doc     Initialize the camera.
+%%          Use this function to initialize the ESP32 camera with default configuration.
+%% @end
+%%-----------------------------------------------------------------------------
+-spec init() -> ok | {error, Reason::term()}.
+init() ->
+    init(?DEFAULT_CONFIG).
+
 %%-----------------------------------------------------------------------------
 %% @param   Config  the ESP32cam configuration
-%% @returns The platform name.
+%% @returns `ok' or error with reason
 %% @doc     Initialize the camera.
 %%          Use this function to initialize the ESP32 camera
 %% @end

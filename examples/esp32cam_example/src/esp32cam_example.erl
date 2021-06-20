@@ -1,5 +1,5 @@
 %%
-%% Copyright (c) 2020 fred@dushin.net
+%% Copyright (c) 2021 fred@dushin.net
 %% All rights reserved.
 %%
 %% Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,7 @@
 -export([start/0]).
 
 start() ->
-    ok = esp32cam:init([]),
+    ok = esp32cam:init(),
+    io:format("Camera initialized.~n"),
     {ok, Image} = esp32cam:capture(),
-    erlang:display(erlang:byte_size(Image)).
+    io:format("Captured image.  size=~p~n", [erlang:byte_size(Image)]).

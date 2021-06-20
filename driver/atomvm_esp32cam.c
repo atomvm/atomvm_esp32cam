@@ -202,7 +202,6 @@ static term nif_esp32cam_capture(Context *ctx, int argc, term argv[])
 
     uint8_t use_flash = 0;
 
-
     camera_fb_t *fb = esp_camera_fb_get();
     if (!fb) {
         ESP_LOGE(TAG, "Camera capture failed");
@@ -236,6 +235,11 @@ static const struct Nif esp32cam_capture_nif =
     .nif_ptr = nif_esp32cam_capture
 };
 
+
+void atomvm_esp32cam_init(GlobalContext *gloabl)
+{
+    // no-op
+}
 
 const struct Nif *atomvm_esp32cam_get_nif(const char *nifname)
 {
