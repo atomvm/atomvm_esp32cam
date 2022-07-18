@@ -1,0 +1,4 @@
+.vscode/**
+_build/**
+doc/**
+rebar.lock

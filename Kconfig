@@ -1,0 +1,9 @@
+menu "ATOMVM_ESP32CAM Configuration"
+
+config AVM_ESP32CAM_ENABLE
+	bool  "Enable AtomVM ESP32CAM driver"
+	default y
+	help
+		Use this parameter to enable or disable the AtomVM ESP32CAM driver.
+
+endmenu

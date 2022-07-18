@@ -17,6 +17,7 @@
 
 #include <esp_camera.h>
 #include <esp_log.h>
+#include <esp32_sys.h>
 
 #include <stdlib.h>
 
@@ -64,7 +65,7 @@ static const char *const svga_a =             "\x4"  "svga";
 static const char *const xga_a =              "\x3"  "xga";
 static const char *const sxga_a =             "\x4"  "sxga";
 static const char *const uxga_a =             "\x4"  "uxga";
-static const char *const flash_a =            "\x5"  "flash";
+// static const char *const flash_a =            "\x5"  "flash";
 static const char *const bad_state_a =        "\x9"  "bad_state";
 static const char *const capture_failed_a =   "\xE"  "capture_failed";
 //                                                    123456789ABCDEF
@@ -262,3 +263,8 @@ const struct Nif *atomvm_esp32cam_get_nif(const char *nifname)
 
     return NULL;
 }
+
+#include <sdkconfig.h>
+#ifdef CONFIG_AVM_ESP32CAM_ENABLE
+REGISTER_NIF_COLLECTION(atomvm_esp32cam, atomvm_esp32cam_init, atomvm_esp32cam_get_nif)
+#endif

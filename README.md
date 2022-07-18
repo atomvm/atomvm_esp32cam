@@ -13,7 +13,7 @@ This driver is included as an add-on to the AtomVM base image.  In order to use 
 Clone this repository in the `src/platforms/esp32/components` directory of the AtomVM source tree.
 
     shell$ cd src/platforms/esp32/components
-    shell$ git clone https://github.com/fadushin/atomvm_esp32cam.git
+    shell$ git clone https://github.com/atomvm/atomvm_esp32cam.git
 
 Clone the Espressif `esp32-camera` component in the `src/platforms/esp32/components` directory of the AtomVM source tree.
 
