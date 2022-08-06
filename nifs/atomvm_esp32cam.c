@@ -15,21 +15,21 @@
 // limitations under the License.
 //
 
+
+
+#include <atomvm_esp32cam.h>
+#include <context.h>
+#include <defaultatoms.h>
 #include <esp_camera.h>
 #include <esp_log.h>
 #include <esp32_sys.h>
-
-#include <stdlib.h>
-
-#include <context.h>
-#include <defaultatoms.h>
 #include <interop.h>
 #include <nifs.h>
 #include <port.h>
+#include <stdlib.h>
 #include <term.h>
-#include "atomvm_esp32cam.h"
 
-//#define ENABLE_TRACE
+// #define ENABLE_TRACE
 #include "trace.h"
 
 #define TAG "atomvm_esp32cam"
@@ -160,12 +160,16 @@ static term nif_esp32cam_init(Context *ctx, int argc, term argv[])
 
     framesize_t frame_size = get_frame_size(ctx, interop_proplist_get_value(config, context_make_atom(ctx, frame_size_a)));
     if (frame_size == FRAMESIZE_INVALID) {
+        ESP_LOGE(TAG, "Invalid frame_size=%i", frame_size);
         RAISE_ERROR(BADARG_ATOM);
     }
+    TRACE("frame_size: %i\n", frame_size);
     int jpeg_quality = get_jpeg_quality(interop_proplist_get_value(config, context_make_atom(ctx, jpeg_quality_a)));
     if (jpeg_quality == INVALID_JPEG_QUALITY) {
+        ESP_LOGE(TAG, "Invalid jpeg_quality=%i", jpeg_quality);
         RAISE_ERROR(BADARG_ATOM);
     }
+    TRACE("jpeg_quality: %i\n", jpeg_quality);
 
     camera_config_t *camera_config = create_camera_config(frame_size, jpeg_quality);
     if (IS_NULL_PTR(camera_config)) {
@@ -175,6 +179,7 @@ static term nif_esp32cam_init(Context *ctx, int argc, term argv[])
     esp_err_t err = esp_camera_init(camera_config);
     free(camera_config);
     if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to initialize esp_camera: err=%i", err);
         if (UNLIKELY(memory_ensure_free(ctx, 3) != MEMORY_GC_OK)) {
             RAISE_ERROR(MEMORY_ATOM);
         }
