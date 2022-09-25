@@ -25,7 +25,7 @@ set(ATOMVM_ESP32CAM_COMPONENT_SRCS
 idf_component_register(
     SRCS ${ATOMVM_ESP32CAM_COMPONENT_SRCS}
     INCLUDE_DIRS "nifs/include"
-    PRIV_REQUIRES "libatomvm" "main" "esp32-camera"
+    PRIV_REQUIRES "libatomvm" "avm_sys" "esp32-camera"
 )
 
 idf_build_set_property(
