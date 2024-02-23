@@ -123,8 +123,8 @@ static camera_config_t *create_camera_config(framesize_t frame_size, int jpeg_qu
     config->pin_pwdn  = AI_THINKER_CAM_PIN_PWDN;
     config->pin_reset = AI_THINKER_CAM_PIN_RESET;
     config->pin_xclk = AI_THINKER_CAM_PIN_XCLK;
-    config->pin_sscb_sda = AI_THINKER_CAM_PIN_SIOD;
-    config->pin_sscb_scl = AI_THINKER_CAM_PIN_SIOC;
+    config->pin_sccb_sda = AI_THINKER_CAM_PIN_SIOD;
+    config->pin_sccb_scl = AI_THINKER_CAM_PIN_SIOC;
     config->pin_d7 = AI_THINKER_CAM_PIN_D7;
     config->pin_d6 = AI_THINKER_CAM_PIN_D6;
     config->pin_d5 = AI_THINKER_CAM_PIN_D5;
@@ -223,7 +223,7 @@ static term nif_esp32cam_capture(Context *ctx, int argc, term argv[])
         ESP_LOGE(TAG, "Image memory allocation (%i) failed", fb->len);
         RAISE_ERROR(MEMORY_ATOM);
     }
-    term image = term_from_literal_binary((const char *)fb->buf, fb->len, ctx);
+    term image = term_from_literal_binary((const char *)fb->buf, fb->len, &ctx->heap, ctx->global);
     esp_camera_fb_return(fb);
 
     return port_create_tuple2(ctx, OK_ATOM, image);
@@ -271,5 +271,5 @@ const struct Nif *atomvm_esp32cam_get_nif(const char *nifname)
 
 #include <sdkconfig.h>
 #ifdef CONFIG_AVM_ESP32CAM_ENABLE
-REGISTER_NIF_COLLECTION(atomvm_esp32cam, atomvm_esp32cam_init, atomvm_esp32cam_get_nif)
+REGISTER_NIF_COLLECTION(atomvm_esp32cam, atomvm_esp32cam_init, NULL, atomvm_esp32cam_get_nif)
 #endif
