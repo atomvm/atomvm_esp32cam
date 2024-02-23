@@ -24,4 +24,10 @@
 void atomvm_esp32cam_init(GlobalContext *global);
 const struct Nif *atomvm_esp32cam_get_nif(const char *nifname);
 
+// TODO: deprecated helper, remove this
+static inline term context_make_atom(Context *ctx, AtomString string)
+{
+    return globalcontext_make_atom(ctx->global, string);
+}
+
 #endif
