@@ -77,19 +77,19 @@ static framesize_t get_frame_size(Context *ctx, term frame_size)
 {
     if (term_is_nil(frame_size)) {
         return FRAMESIZE_XGA;
-    } else if (frame_size == context_make_atom(ctx, qvga_a)) {
+    } else if (frame_size == globalcontext_make_atom(ctx->global, qvga_a)) {
         return FRAMESIZE_QVGA;
-    } else if (frame_size == context_make_atom(ctx, cif_a)) {
+    } else if (frame_size == globalcontext_make_atom(ctx->global, cif_a)) {
         return FRAMESIZE_CIF;
-    } else if (frame_size == context_make_atom(ctx, vga_a)) {
+    } else if (frame_size == globalcontext_make_atom(ctx->global, vga_a)) {
         return FRAMESIZE_VGA;
-    } else if (frame_size == context_make_atom(ctx, svga_a)) {
+    } else if (frame_size == globalcontext_make_atom(ctx->global, svga_a)) {
         return FRAMESIZE_SVGA;
-    } else if (frame_size == context_make_atom(ctx, xga_a)) {
+    } else if (frame_size == globalcontext_make_atom(ctx->global, xga_a)) {
         return FRAMESIZE_XGA;
-    } else if (frame_size == context_make_atom(ctx, sxga_a)) {
+    } else if (frame_size == globalcontext_make_atom(ctx->global, sxga_a)) {
         return FRAMESIZE_SXGA;
-    } else if (frame_size == context_make_atom(ctx, uxga_a)) {
+    } else if (frame_size == globalcontext_make_atom(ctx->global, uxga_a)) {
         return FRAMESIZE_UXGA;
     } else {
         return FRAMESIZE_INVALID;
@@ -123,8 +123,8 @@ static camera_config_t *create_camera_config(framesize_t frame_size, int jpeg_qu
     config->pin_pwdn  = AI_THINKER_CAM_PIN_PWDN;
     config->pin_reset = AI_THINKER_CAM_PIN_RESET;
     config->pin_xclk = AI_THINKER_CAM_PIN_XCLK;
-    config->pin_sscb_sda = AI_THINKER_CAM_PIN_SIOD;
-    config->pin_sscb_scl = AI_THINKER_CAM_PIN_SIOC;
+    config->pin_sccb_sda = AI_THINKER_CAM_PIN_SIOD;
+    config->pin_sccb_scl = AI_THINKER_CAM_PIN_SIOC;
     config->pin_d7 = AI_THINKER_CAM_PIN_D7;
     config->pin_d6 = AI_THINKER_CAM_PIN_D6;
     config->pin_d5 = AI_THINKER_CAM_PIN_D5;
@@ -158,13 +158,13 @@ static term nif_esp32cam_init(Context *ctx, int argc, term argv[])
         config = argv[0];
     }
 
-    framesize_t frame_size = get_frame_size(ctx, interop_proplist_get_value(config, context_make_atom(ctx, frame_size_a)));
+    framesize_t frame_size = get_frame_size(ctx, interop_proplist_get_value(config, globalcontext_make_atom(ctx->global, frame_size_a)));
     if (frame_size == FRAMESIZE_INVALID) {
         ESP_LOGE(TAG, "Invalid frame_size=%i", frame_size);
         RAISE_ERROR(BADARG_ATOM);
     }
     TRACE("frame_size: %i\n", frame_size);
-    int jpeg_quality = get_jpeg_quality(interop_proplist_get_value(config, context_make_atom(ctx, jpeg_quality_a)));
+    int jpeg_quality = get_jpeg_quality(interop_proplist_get_value(config, globalcontext_make_atom(ctx->global, jpeg_quality_a)));
     if (jpeg_quality == INVALID_JPEG_QUALITY) {
         ESP_LOGE(TAG, "Invalid jpeg_quality=%i", jpeg_quality);
         RAISE_ERROR(BADARG_ATOM);
@@ -203,7 +203,7 @@ static term nif_esp32cam_capture(Context *ctx, int argc, term argv[])
 
     if (!camera_initialized) {
         ESP_LOGE(TAG, "Camera not initialized!  Bad state.");
-        RAISE_ERROR(context_make_atom(ctx, bad_state_a));
+        RAISE_ERROR(globalcontext_make_atom(ctx->global, bad_state_a));
     }
 
     uint8_t use_flash = 0;
@@ -214,7 +214,7 @@ static term nif_esp32cam_capture(Context *ctx, int argc, term argv[])
         if (UNLIKELY(memory_ensure_free(ctx, 3) != MEMORY_GC_OK)) {
             RAISE_ERROR(MEMORY_ATOM);
         }
-        term error = port_create_error_tuple(ctx, context_make_atom(ctx, capture_failed_a));
+        term error = port_create_error_tuple(ctx, globalcontext_make_atom(ctx->global, capture_failed_a));
         return error;
     }
 
@@ -223,7 +223,7 @@ static term nif_esp32cam_capture(Context *ctx, int argc, term argv[])
         ESP_LOGE(TAG, "Image memory allocation (%i) failed", fb->len);
         RAISE_ERROR(MEMORY_ATOM);
     }
-    term image = term_from_literal_binary((const char *)fb->buf, fb->len, ctx);
+    term image = term_from_literal_binary((const char *)fb->buf, fb->len, &ctx->heap, ctx->global);
     esp_camera_fb_return(fb);
 
     return port_create_tuple2(ctx, OK_ATOM, image);
@@ -271,5 +271,5 @@ const struct Nif *atomvm_esp32cam_get_nif(const char *nifname)
 
 #include <sdkconfig.h>
 #ifdef CONFIG_AVM_ESP32CAM_ENABLE
-REGISTER_NIF_COLLECTION(atomvm_esp32cam, atomvm_esp32cam_init, atomvm_esp32cam_get_nif)
+REGISTER_NIF_COLLECTION(atomvm_esp32cam, atomvm_esp32cam_init, NULL, atomvm_esp32cam_get_nif)
 #endif
